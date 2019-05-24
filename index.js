@@ -24,10 +24,13 @@ function download (repo, dest, opts, fn) {
   }
   opts = opts || {}
   var clone = opts.clone || false
-
+  
+  var headerList = opts.headers;
+  headerList["accept"] = "application/zip";
+  
   repo = normalize(repo)
   var url = repo.url || getUrl(repo, clone)
-
+  
   if (clone) {
     gitclone(url, dest, { checkout: repo.checkout, shallow: repo.checkout === 'master' }, function (err) {
       if (err === undefined) {
@@ -38,7 +41,7 @@ function download (repo, dest, opts, fn) {
       }
     })
   } else {
-    downloadUrl(url, dest, { extract: true, strip: 1, mode: '666', headers: { accept: 'application/zip' } })
+    downloadUrl(url, dest, { extract: true, strip: 1, mode: '666', headers: headerList })
       .then(function (data) {
         fn()
       })
